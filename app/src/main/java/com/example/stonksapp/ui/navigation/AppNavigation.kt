@@ -48,7 +48,3 @@ fun AppNavigation(
         }
     }
 }
-
-object NavigationArguments {
-
-}
