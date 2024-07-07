@@ -48,7 +48,7 @@ object AppModule {
     @Provides
     @Singleton
     fun providesCache(@ApplicationContext context: Context) =
-        Cache(context.cacheDir, (5 * 1024 * 1024).toLong())
+        Cache(context.cacheDir, (10 * 1024 * 1024).toLong())
 
     @Provides
     @Singleton
