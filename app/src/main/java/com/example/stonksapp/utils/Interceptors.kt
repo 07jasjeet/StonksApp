@@ -35,7 +35,7 @@ class CacheInterceptor: Interceptor {
             .newBuilder()
             .cacheControl(
                 CacheControl.Builder()
-                    // This data is updated only once per day.
+                    // Data is updated only once per day.
                     .maxAge(1, TimeUnit.DAYS)
                     .build()
             )
