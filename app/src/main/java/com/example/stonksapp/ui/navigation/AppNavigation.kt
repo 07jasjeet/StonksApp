@@ -31,7 +31,9 @@ fun AppNavigation(
         startDestination = AppNavigationItem.Explore.route
     ){
         composable(AppNavigationItem.Explore.route) {
-            ExploreScreen()
+            ExploreScreen {
+                navController.navigate(AppNavigationItem.Details.createRoute(it))
+            }
         }
 
         composable(AppNavigationItem.Details.route) {

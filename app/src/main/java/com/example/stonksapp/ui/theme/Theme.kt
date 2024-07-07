@@ -118,7 +118,7 @@ data class Paddings(
     val vertical: Dp = 8.dp,
     val lazyListAdjacent: Dp = 6.dp,
     val coverArtAndTextGap: Dp = 8.dp,
-    val insideCard: Dp = 8.dp,
+    val insideCard: Dp = 16.dp,
     /** Padding for text inside custom made buttons.*/
     val insideButton: Dp = 8.dp,
     val adjacentDialogButtons: Dp = 8.dp,
@@ -138,7 +138,8 @@ private val LocalSizes = staticCompositionLocalOf { Sizes() }
 data class Shapes(
     // Change size field when changing this.
     val dialogs: Shape = RoundedCornerShape(4.dp),
-    val chips: Shape = RoundedCornerShape(4.dp)
+    val chips: Shape = RoundedCornerShape(4.dp),
+    val card: Shape = RoundedCornerShape(16.dp),
 )
 
 private val LocalShapes = staticCompositionLocalOf { Shapes() }
