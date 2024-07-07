@@ -16,10 +16,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.stonksapp.data.StockOverview
 import com.example.stonksapp.data.StockType
 import com.example.stonksapp.ui.components.StockOverviewCard
+import com.example.stonksapp.ui.components.VerticalSpacer
 import com.example.stonksapp.ui.theme.StonksAppTheme
 import com.example.stonksapp.viewmodel.ExploreUiState
 import com.example.stonksapp.viewmodel.ExploreViewModel

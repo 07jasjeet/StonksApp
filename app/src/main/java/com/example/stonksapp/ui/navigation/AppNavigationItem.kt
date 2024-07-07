@@ -16,4 +16,6 @@ sealed class AppNavigationItem(
         const val SYMBOL = "symbol"
         fun createRoute(symbol: String) = "details/$symbol"
     }
+
+
 }
