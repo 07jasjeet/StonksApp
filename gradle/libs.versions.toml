@@ -4,7 +4,6 @@ converterGson = "2.11.0"
 datastorePreferences = "1.0.0"
 hiltAndroidCompiler = "2.51.1"
 hiltCompiler = "1.2.0"
-hiltLifecycleViewmodel = "1.0.0-alpha03"
 kotlin = "1.9.24"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -23,7 +22,6 @@ typesafe-datastore = "1.0.1"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
-androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidCompiler" }
@@ -41,10 +39,10 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended"}
 jasjeet-datastore-gson = { group = "com.github.07jasjeet.typesafe-datastore", name = "typesafe-datastore-gson", version.ref = "typesafe-datastore" }
 jasjeet-datastore = { group = "com.github.07jasjeet.typesafe-datastore", name = "typesafe-datastore", version.ref = "typesafe-datastore" }
 jasjeet-datastore-test = { group = "com.github.07jasjeet.typesafe-datastore", name = "typesafe-datastore-test", version.ref = "typesafe-datastore" }
-material = { module = "com.google.android.material:material", version.ref = "material" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
