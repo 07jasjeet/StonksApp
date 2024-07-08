@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.stonksapp.data.StockOverview
 import com.example.stonksapp.data.StockType
+import com.example.stonksapp.ui.components.ErrorBar
 import com.example.stonksapp.ui.components.StockOverviewCard
 import com.example.stonksapp.ui.components.VerticalSpacer
 import com.example.stonksapp.ui.theme.StonksAppTheme
@@ -37,6 +38,7 @@ fun ExploreScreen(
     val uiState by viewModel.uiState.collectAsState()
     ExploreScreen(
         uiState = uiState,
+        onErrorShown = { viewModel.clearErrorFlow() },
         onStonkClick = onStonkClick
     )
 }
@@ -45,10 +47,16 @@ fun ExploreScreen(
 @Composable
 fun ExploreScreen(
     uiState: ExploreUiState,
+    onErrorShown: () -> Unit,
     onStonkClick: (String) -> Unit
 ) {
     val pagerState = rememberPagerState { 2 }
     Column {
+        ErrorBar(
+            error = uiState.error,
+            onErrorShown = onErrorShown
+        )
+
         ExploreTabs(selectedTabIndex = pagerState.currentPage) {
             pagerState.animateScrollToPage(it)
         }
@@ -115,7 +123,8 @@ private fun ExplorePreview() {
                         StockOverview(Mock)
                     }
                 ),
-                onStonkClick = {}
+                onStonkClick = {},
+                onErrorShown = {}
             )
         }
     }

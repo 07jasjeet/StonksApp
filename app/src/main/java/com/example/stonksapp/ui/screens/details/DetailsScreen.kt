@@ -7,7 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.stonksapp.data.CompanyOverview
+import com.example.stonksapp.ui.components.ErrorBar
 import com.example.stonksapp.ui.theme.StonksAppTheme
+import com.example.stonksapp.utils.Mock
 import com.example.stonksapp.viewmodel.DetailsViewModel
 
 @Composable
@@ -21,16 +24,26 @@ fun DetailsScreen(
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    DetailsScreen(uiState = uiState, onBack = onBack)
+    DetailsScreen(
+        uiState = uiState,
+        onBack = onBack,
+        onErrorShown = {
+            viewModel.clearErrorFlow()
+        }
+    )
 }
 
 @Composable
 fun DetailsScreen(
     uiState: DetailsUiState,
+    onErrorShown: () -> Unit,
     onBack: () -> Unit
 ) {
     Column {
-        
+        ErrorBar(
+            error = uiState.error,
+            onErrorShown = onErrorShown
+        )
     }
 }
 
@@ -39,8 +52,11 @@ fun DetailsScreen(
 private fun DetailsScreenPreview() {
     StonksAppTheme {
         DetailsScreen(
-            uiState = DetailsUiState(),
-            onBack = {}
+            uiState = DetailsUiState(
+                companyOverview = CompanyOverview(Mock)
+            ),
+            onBack = {},
+            onErrorShown = {}
         )
     }
 }

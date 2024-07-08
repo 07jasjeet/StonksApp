@@ -79,7 +79,9 @@ class MainActivity : ComponentActivity() {
                                     ?.route
 
                                 if (currentDestination == AppNavigationItem.Explore.route) {
-                                    IconButton(onClick = {}) {
+                                    IconButton(onClick = {
+                                        // Do nothing
+                                    }) {
                                         Icon(
                                             imageVector = Icons.Default.Explore,
                                             tint = StonksAppTheme.colorScheme.text,
