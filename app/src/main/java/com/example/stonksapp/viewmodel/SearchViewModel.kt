@@ -38,7 +38,7 @@ class SearchViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     private val queryFlow = inputQueryFlow
         .asStateFlow()
-        .debounce(500)
+        .debounce(800)
         .distinctUntilChanged()
 
     // Result flows

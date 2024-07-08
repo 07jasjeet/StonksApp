@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.stonksapp.data.StockOverview
 import com.example.stonksapp.data.StockType
 import com.example.stonksapp.ui.theme.StonksAppTheme
+import com.example.stonksapp.utils.Mock
 
 @Composable
 fun StockOverviewCard(
@@ -77,7 +78,7 @@ fun StockOverviewCard(
                     if (stockType == StockType.Gainer) Color(0xFF00AD00) else Color.Red
                 }
                 TextStonks(
-                    text = "${if (stockType == StockType.Gainer) "+" else "-"}${stockOverview.changePercentage}",
+                    text = "${if (stockType == StockType.Gainer) "+" else ""}${stockOverview.changePercentage}",
                     color = color,
                     fontWeight = FontWeight.Bold,
                     fontSize = (side.value / 14).sp
@@ -105,7 +106,7 @@ fun StockOverviewCard(
             )
 
             TextStonks(
-                text = "Volume traded: ${stockOverview.volume} shares",
+                text = "Volume: ${stockOverview.volume} shares",
                 color = StonksAppTheme.colorScheme.hint,
                 fontSize = (side.value / 16).sp,
             )
@@ -130,13 +131,7 @@ private fun StockOverviewCardPreview() {
             StockOverviewCard(
                 modifier = Modifier.padding(16.dp),
                 stockType = StockType.Gainer,
-                stockOverview = StockOverview(
-                    ticker = "SHOTW",
-                    price = "0.34",
-                    changeAmount = "0.16",
-                    changePercentage = "88.8889%",
-                    volume = "1597"
-                )
+                stockOverview = StockOverview(Mock)
             )
         }
     }

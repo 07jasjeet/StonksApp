@@ -9,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -42,15 +44,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.stonksapp.data.Match
 import com.example.stonksapp.ui.components.ErrorBar
+import com.example.stonksapp.ui.components.SearchMatchCard
 import com.example.stonksapp.ui.theme.StonksAppTheme
 import com.example.stonksapp.utils.ResponseError
 import com.example.stonksapp.viewmodel.SearchViewModel
-import kotlinx.coroutines.flow.flow
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(
     isActive: Boolean,
+    navigateToDetails: (symbol: String) -> Unit,
     viewModel: SearchViewModel = hiltViewModel(),
     deactivate: () -> Unit
 ) {
@@ -69,16 +71,17 @@ fun SearchScreen(
             },
             onQueryChange = { query -> viewModel.updateQueryFlow(query) },
             onClick = { match ->
-                TODO()
+                match.symbol?.let { navigateToDetails(it) }
+                deactivate()
+                viewModel.clearUi()
             },
             onClear = { viewModel.clearUi() },
             onErrorShown = { viewModel.clearErrorFlow() },
         )
-
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchScreen(
     uiState: SearchUiState,
@@ -106,7 +109,10 @@ private fun SearchScreen(
     }
 
     SearchBar(
-        modifier = Modifier.focusRequester(focusRequester),
+        modifier = Modifier
+            .focusRequester(focusRequester)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         query = uiState.query,
         onQueryChange = onQueryChange,
         onSearch = onSearch,
@@ -168,19 +174,19 @@ private fun SearchScreen(
             ErrorBar(uiState.error, onErrorShown)
 
             // Main Content
-            UserList(uiState, onClick)
+            StockList(uiState, onClick)
         }
     }
 }
 
 @Composable
-private fun UserList(
+private fun StockList(
     uiState: SearchUiState,
     onClick: (Match) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(StonksAppTheme.paddings.lazyListAdjacent)) {
         items(uiState.matches) { match  ->
-            // TODO
+            SearchMatchCard(match)
         }
     }
 }

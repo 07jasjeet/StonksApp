@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +36,8 @@ import com.example.stonksapp.ui.components.TextStonks
 import com.example.stonksapp.ui.navigation.AppNavigation
 import com.example.stonksapp.ui.navigation.AppNavigationItem
 import com.example.stonksapp.ui.screens.explore.navigation.ExploreDestination.Companion.toExploreDestination
+import com.example.stonksapp.ui.screens.search.SearchScreen
+import com.example.stonksapp.ui.screens.search.rememberSearchBarState
 import com.example.stonksapp.ui.theme.StonksAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -58,6 +61,7 @@ class MainActivity : ComponentActivity() {
                 val snackbarHostState = remember { SnackbarHostState() }
                 val scope = rememberCoroutineScope()
                 val navController = rememberNavController()
+                val searchBarState = rememberSearchBarState()
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -92,7 +96,17 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = null
                                         )
                                     }
-
+                                }
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = { searchBarState.activate() }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        tint = StonksAppTheme.colorScheme.text,
+                                        contentDescription = null
+                                    )
                                 }
                             }
                         )
@@ -113,6 +127,18 @@ class MainActivity : ComponentActivity() {
                         snackbarState = snackbarHostState
                     )
                 }
+
+                SearchScreen(
+                    isActive = searchBarState.isActive,
+                    navigateToDetails = {
+                        navController.navigate(
+                            AppNavigationItem.Details.createRoute(symbol = it)
+                        )
+                    },
+                    deactivate = {
+                        searchBarState.deactivate()
+                    }
+                )
             }
         }
     }

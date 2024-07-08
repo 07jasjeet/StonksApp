@@ -1,5 +1,6 @@
 package com.example.stonksapp.ui.screens.explore
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +25,7 @@ import com.example.stonksapp.data.StockType
 import com.example.stonksapp.ui.components.StockOverviewCard
 import com.example.stonksapp.ui.components.VerticalSpacer
 import com.example.stonksapp.ui.theme.StonksAppTheme
+import com.example.stonksapp.utils.Mock
 import com.example.stonksapp.viewmodel.ExploreUiState
 import com.example.stonksapp.viewmodel.ExploreViewModel
 
@@ -97,14 +100,23 @@ fun StocksList(
 }
 
 
-
 @Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun ExplorePreview() {
     StonksAppTheme {
-        ExploreScreen(
-            uiState = ExploreUiState(),
-            onStonkClick = {}
-        )
+        Surface {
+            ExploreScreen(
+                uiState = ExploreUiState(
+                    topGainers = List(20) {
+                        StockOverview(Mock)
+                    },
+                    topLosers = List(20) {
+                        StockOverview(Mock)
+                    }
+                ),
+                onStonkClick = {}
+            )
+        }
     }
 }
