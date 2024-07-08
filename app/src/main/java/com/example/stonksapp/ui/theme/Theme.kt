@@ -45,6 +45,7 @@ data class ColorScheme(
     val chipUnselected: Color,
     val chipSelected: Color,
     val dialog: Color,
+    val tabs: Color,
     val dialogPositiveButtonEnabled: Color = Color(0xFF5DA855),
     val dialogPositiveButtonDisabled: Color = Color(0xFF9EB99C),
     val dialogNegativeButton: Color = Color(0xFF696658),
@@ -68,7 +69,8 @@ private val colorSchemeDark = ColorScheme(
     chipSelected = Color.Black,
     dialog = Color.Black,
     text = Color.White,
-    hint = Color(0xFF8C8C8C)
+    hint = Color(0xFF8C8C8C),
+    tabs = Color(0xFF1E1E1E)
 )
 
 private val colorSchemeLight = ColorScheme(
@@ -85,7 +87,8 @@ private val colorSchemeLight = ColorScheme(
     chipSelected = Color(0xFFB6B6B6),
     dialog = Color.White,
     text = Color.Black,
-    hint = Color(0xFF707070)
+    hint = Color(0xFF707070),
+    tabs = Color(0xFFDADADA)
 )
 
 private val LocalColorScheme: ProvidableCompositionLocal<ColorScheme> = staticCompositionLocalOf { colorSchemeLight }

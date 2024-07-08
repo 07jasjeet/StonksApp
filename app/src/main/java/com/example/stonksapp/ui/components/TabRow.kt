@@ -32,7 +32,7 @@ fun TabRow(
             .padding(horizontal = StonksAppTheme.paddings.horizontal)
             .clip(RoundedCornerShape(6.dp)),
         selectedTabIndex = selectedTabIndex,
-        containerColor = StonksAppTheme.colorScheme.chipUnselected,
+        containerColor = StonksAppTheme.colorScheme.tabs,
         indicator = { tabPositions ->
             if (selectedTabIndex < tabPositions.size) {
                 TabRowDefaults.SecondaryIndicator(
