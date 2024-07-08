@@ -10,10 +10,12 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
@@ -46,6 +48,7 @@ import com.example.stonksapp.data.Match
 import com.example.stonksapp.ui.components.ErrorBar
 import com.example.stonksapp.ui.components.SearchMatchCard
 import com.example.stonksapp.ui.theme.StonksAppTheme
+import com.example.stonksapp.utils.Mock
 import com.example.stonksapp.utils.ResponseError
 import com.example.stonksapp.viewmodel.SearchViewModel
 
@@ -71,7 +74,7 @@ fun SearchScreen(
             },
             onQueryChange = { query -> viewModel.updateQueryFlow(query) },
             onClick = { match ->
-                match.symbol?.let { navigateToDetails(it) }
+                navigateToDetails(match.symbol)
                 deactivate()
                 viewModel.clearUi()
             },
@@ -171,10 +174,16 @@ private fun SearchScreen(
         ) {
 
             // Error bar for showing errors
-            ErrorBar(uiState.error, onErrorShown)
+            ErrorBar(
+                error = uiState.error,
+                onErrorShown = onErrorShown
+            )
 
             // Main Content
-            StockList(uiState, onClick)
+            StockList(
+                uiState = uiState,
+                onClick = onClick
+            )
         }
     }
 }
@@ -186,13 +195,16 @@ private fun StockList(
 ) {
     LazyColumn(contentPadding = PaddingValues(StonksAppTheme.paddings.lazyListAdjacent)) {
         items(uiState.matches) { match  ->
-            SearchMatchCard(match)
+            SearchMatchCard(
+                modifier = Modifier.padding(vertical = StonksAppTheme.paddings.lazyListAdjacent),
+                onClick = onClick,
+                match = match
+            )
         }
     }
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Composable
@@ -201,7 +213,7 @@ private fun SearchScreenPreview() {
         SearchScreen(
             uiState = SearchUiState(
                 query = "Jasjeet",
-                matches = listOf(),
+                matches = List(7) { Match(Mock) },
                 error = ResponseError.DOES_NOT_EXIST
             ),
             onDismiss = {},
