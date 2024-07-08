@@ -5,6 +5,7 @@ import com.example.stonksapp.data.CompanyOverview
 import com.example.stonksapp.repository.mainrepository.MainRepository
 import com.example.stonksapp.ui.screens.details.DetailsUiState
 import com.example.stonksapp.utils.Resource
+import com.example.stonksapp.utils.processRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -27,8 +28,7 @@ class DetailsViewModel @AssistedInject constructor(
         fun create(symbol: String): DetailsViewModel
     }
 
-    private val isLoadingFlow = MutableStateFlow(true)
-    private val resultFlow = MutableStateFlow<CompanyOverview?>(null)
+    private val resultFlow = MutableStateFlow<Resource<CompanyOverview>>(Resource.loading())
 
     init {
         fetchDetails(symbol)
@@ -38,13 +38,11 @@ class DetailsViewModel @AssistedInject constructor(
 
     override fun createUiStateFlow(): StateFlow<DetailsUiState> =
         combine(
-            isLoadingFlow,
             resultFlow,
             errorFlow
-        ) { isLoading, result, error ->
+        ) {  result, error ->
             DetailsUiState(
-                isLoading = isLoading,
-                companyOverview = result,
+                resource = result,
                 error = error
             )
         }.stateIn(
@@ -55,14 +53,9 @@ class DetailsViewModel @AssistedInject constructor(
 
     fun fetchDetails(symbol: String) {
         viewModelScope.launch {
-            isLoadingFlow.emit(true)
-            val result = repository.fetchCompanyOverview(symbol)
-            when (result.status) {
-                Resource.Status.SUCCESS -> resultFlow.emit(result.data)
-                Resource.Status.FAILED -> emitError(result.error)
-                else -> Unit
-            }
-            isLoadingFlow.emit(false)
+            resultFlow.processRequest {
+                repository.fetchCompanyOverview(symbol)
+            }.emitErrorIfAny()
         }
     }
 }

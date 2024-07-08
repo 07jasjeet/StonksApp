@@ -9,6 +9,8 @@ import com.example.stonksapp.utils.ResponseError.Companion.getError
 import com.example.stonksapp.utils.ResponseError.Companion.toResponseError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
@@ -36,6 +38,20 @@ suspend inline fun <T: AlphaVantageResponse> parseResponse(
         }
 
     }.getOrElse { logAndReturn(it) }
+}
+
+
+suspend inline fun <T> MutableStateFlow<Resource<T>>.processRequest(
+    response: () -> Resource<T>
+): Resource<T> {
+    getAndUpdate {
+        Resource.loading(data = it.data)
+    }
+
+    val result = response()
+    emit(result)
+
+    return result
 }
 
 

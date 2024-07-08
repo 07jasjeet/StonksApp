@@ -69,7 +69,7 @@ private val colorSchemeDark = ColorScheme(
     chipSelected = Color.Black,
     dialog = Color.Black,
     text = Color.White,
-    hint = Color(0xFF8C8C8C),
+    hint = Color(0xFF9C9C9C),
     tabs = Color(0xFF1E1E1E)
 )
 

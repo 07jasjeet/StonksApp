@@ -2,6 +2,7 @@ package com.example.stonksapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.stonksapp.utils.Resource
 import com.example.stonksapp.utils.ResponseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,10 @@ abstract class BaseViewModel<UiState>: ViewModel() {
         viewModelScope.launch {
             successMsgFlow.emit(messageId)
         }
+    }
+
+    protected fun <T> Resource<T>.emitErrorIfAny() {
+        ifFailed { emitError(error) }
     }
 
     /** Call this function to reset [errorFlow]'s latest emission.*/
