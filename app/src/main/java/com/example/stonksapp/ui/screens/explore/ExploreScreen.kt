@@ -3,6 +3,7 @@ package com.example.stonksapp.ui.screens.explore
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,21 +13,27 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.stonksapp.data.StockOverview
 import com.example.stonksapp.data.StockType
+import com.example.stonksapp.data.TopGainersLosers
 import com.example.stonksapp.ui.components.ErrorBar
 import com.example.stonksapp.ui.components.StockOverviewCard
+import com.example.stonksapp.ui.components.TextStonks
 import com.example.stonksapp.ui.components.VerticalSpacer
+import com.example.stonksapp.ui.screens.details.MainContent
 import com.example.stonksapp.ui.theme.StonksAppTheme
 import com.example.stonksapp.utils.Mock
+import com.example.stonksapp.utils.Resource
 import com.example.stonksapp.viewmodel.ExploreUiState
 import com.example.stonksapp.viewmodel.ExploreViewModel
 
@@ -61,23 +68,48 @@ fun ExploreScreen(
             pagerState.animateScrollToPage(it)
         }
 
-        HorizontalPager(state = pagerState) { index ->
-            if (index == 0) {
-                // Top Gainers
-                StocksList(
-                    stockType = StockType.Gainer,
-                    stockOverviewList = uiState.topGainers,
-                    onStonkClick = onStonkClick
-                )
-            } else {
-                // Top Losers
-                StocksList(
-                    stockType = StockType.Loser,
-                    stockOverviewList = uiState.topLosers,
-                    onStonkClick = onStonkClick
-                )
+        when (uiState.topGainersLosers.status) {
+            Resource.Status.LOADING -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = StonksAppTheme.colorScheme.lbSignature)
+                }
+            }
+            Resource.Status.FAILED -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextStonks(
+                        text = "Oops, something went wrong. Please try again later",
+                        color = StonksAppTheme.colorScheme.hint
+                    )
+                }
+            }
+            else -> {
+                HorizontalPager(state = pagerState) { index ->
+                    if (index == 0) {
+                        // Top Gainers
+                        StocksList(
+                            stockType = StockType.Gainer,
+                            stockOverviewList = uiState.topGainersLosers.data?.topGainers ?: emptyList(),
+                            onStonkClick = onStonkClick
+                        )
+                    } else {
+                        // Top Losers
+                        StocksList(
+                            stockType = StockType.Loser,
+                            stockOverviewList = uiState.topGainersLosers.data?.topLosers ?: emptyList(),
+                            onStonkClick = onStonkClick
+                        )
+                    }
+                }
             }
         }
+
+
     }
 }
 
@@ -116,12 +148,7 @@ private fun ExplorePreview() {
         Surface {
             ExploreScreen(
                 uiState = ExploreUiState(
-                    topGainers = List(20) {
-                        StockOverview(Mock)
-                    },
-                    topLosers = List(20) {
-                        StockOverview(Mock)
-                    }
+                    topGainersLosers = Resource.success(TopGainersLosers(Mock))
                 ),
                 onStonkClick = {},
                 onErrorShown = {}

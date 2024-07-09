@@ -3,9 +3,11 @@ package com.example.stonksapp.viewmodel
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.stonksapp.data.StockOverview
+import com.example.stonksapp.data.TopGainersLosers
 import com.example.stonksapp.repository.mainrepository.MainRepository
 import com.example.stonksapp.utils.Resource
 import com.example.stonksapp.utils.ResponseError
+import com.example.stonksapp.utils.processRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,9 +21,7 @@ import javax.inject.Inject
 class ExploreViewModel @Inject constructor(
     private val repository: MainRepository
 ): BaseViewModel<ExploreUiState>() {
-    private val isLoadingFlow = MutableStateFlow(false)
-    private val topGainersFlow = MutableStateFlow<List<StockOverview>>(listOf())
-    private val topLosersFlow = MutableStateFlow<List<StockOverview>>(listOf())
+    private val topGainersLosersFlow = MutableStateFlow<Resource<TopGainersLosers>>(Resource.loading())
 
     override val uiState: StateFlow<ExploreUiState> = createUiStateFlow()
 
@@ -31,15 +31,11 @@ class ExploreViewModel @Inject constructor(
 
     override fun createUiStateFlow(): StateFlow<ExploreUiState> =
         combine(
-            isLoadingFlow,
-            topGainersFlow,
-            topLosersFlow,
+            topGainersLosersFlow,
             errorFlow
-        ) { isLoading, topGainers, topLosers, error ->
+        ) { data, error ->
             ExploreUiState(
-                isLoading = isLoading,
-                topGainers = topGainers,
-                topLosers = topLosers,
+                topGainersLosers = data,
                 error = error
             )
         }.stateIn(
@@ -50,25 +46,14 @@ class ExploreViewModel @Inject constructor(
 
     fun fetchExploreData() {
         viewModelScope.launch {
-            isLoadingFlow.emit(true)
-            val result = repository.fetchTopGainersLosers()
-            Log.d("ExploreViewModel", "fetchExploreData: ${result}")
-            when (result.status) {
-                Resource.Status.SUCCESS -> {
-                    topGainersFlow.emit(result.data?.topGainers ?: emptyList())
-                    topLosersFlow.emit(result.data?.topLosers ?: emptyList())
-                }
-                Resource.Status.FAILED -> emitError(result.error)
-                else -> Unit
-            }
-            isLoadingFlow.emit(false)
+            topGainersLosersFlow.processRequest {
+                repository.fetchTopGainersLosers()
+            }.emitErrorIfAny()
         }
     }
 }
 
 data class ExploreUiState(
-    val isLoading: Boolean = true,
-    val topGainers: List<StockOverview> = listOf(),
-    val topLosers: List<StockOverview> = listOf(),
+    val topGainersLosers: Resource<TopGainersLosers> = Resource.loading(),
     val error: ResponseError? = null
 )
