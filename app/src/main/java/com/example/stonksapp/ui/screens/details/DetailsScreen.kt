@@ -384,15 +384,11 @@ fun convertLargeNumber(numberStr: String): String {
 }
 
 @Composable
-private fun InformationChip(text: String) {
+fun InformationChip(text: String) {
     Box(
         modifier = Modifier
             .background(
-                color = if (LocalIsDarkTheme.current) {
-                    Color(0x805E220C)
-                } else {
-                    Color(0x80FFC3AD)
-                },
+                color = StonksAppTheme.colorScheme.infoChip,
                 shape = CircleShape
             )
             .padding(vertical = 8.dp, horizontal = 16.dp)
@@ -401,11 +397,7 @@ private fun InformationChip(text: String) {
             text = text,
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
-            color = if (LocalIsDarkTheme.current) {
-                Color(0xFFFDAC93)
-            } else {
-                Color(0xFFAF3B17)
-            }
+            color = StonksAppTheme.colorScheme.onInfoChip
         )
     }
 }

@@ -52,7 +52,9 @@ data class ColorScheme(
     val dialogNegativeButtonText: Color = Color.White,
     val text: Color,
     val golden: Color = Color(0xFFF9A825),
-    val hint: Color
+    val hint: Color,
+    val infoChip: Color,
+    val onInfoChip: Color,
 )
 
 private val colorSchemeDark = ColorScheme(
@@ -70,7 +72,9 @@ private val colorSchemeDark = ColorScheme(
     dialog = Color.Black,
     text = Color.White,
     hint = Color(0xFF9C9C9C),
-    tabs = Color(0xFF1E1E1E)
+    tabs = Color(0xFF1E1E1E),
+    infoChip = Color(0x805E220C),
+    onInfoChip = Color(0xFFFDAC93)
 )
 
 private val colorSchemeLight = ColorScheme(
@@ -88,7 +92,9 @@ private val colorSchemeLight = ColorScheme(
     dialog = Color.White,
     text = Color.Black,
     hint = Color(0xFF707070),
-    tabs = Color(0xFFDADADA)
+    tabs = Color(0xFFDADADA),
+    infoChip = Color(0x80FFC3AD),
+    onInfoChip = Color(0xFFAF3B17)
 )
 
 private val LocalColorScheme: ProvidableCompositionLocal<ColorScheme> = staticCompositionLocalOf { colorSchemeLight }
