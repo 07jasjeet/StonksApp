@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,8 +84,10 @@ fun ExploreScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     TextStonks(
-                        text = "Oops, something went wrong. Please try again later",
-                        color = StonksAppTheme.colorScheme.hint
+                        modifier = Modifier.padding(16.dp),
+                        text = "Please try again later.",
+                        color = StonksAppTheme.colorScheme.hint,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -124,6 +127,10 @@ fun StocksList(
         modifier = modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
     ) {
+        items(count = 2) {
+            VerticalSpacer(height = 8.dp)
+        }
+
         items(stockOverviewList) {
             StockOverviewCard(
                 modifier = Modifier
