@@ -69,6 +69,7 @@ fun DetailsScreen(
 ) {
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         ErrorBar(

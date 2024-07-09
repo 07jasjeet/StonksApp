@@ -31,13 +31,11 @@ android {
 
     buildTypes {
         debug {
-            isDebuggable = true
             buildConfigField("String", "API_KEY", getProperty("API_KEY"))
         }
         release {
-            // Hardcoded API key for demonstration purposes
             buildConfigField("String", "API_KEY", getProperty("API_KEY"))
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -103,9 +101,9 @@ dependencies {
 }
 
 fun ApplicationBuildType.getProperty(name: String): String {
-    val file = if (isDebuggable && localPropertiesFile.exists()) {
+    val file = if (this.name == "debug" && localPropertiesFile.exists()) {
         localPropertiesFile
-    } else if (!isDebuggable && keystorePropertiesFile.exists()) {
+    } else if (this.name == "release" && keystorePropertiesFile.exists()) {
         keystorePropertiesFile
     } else {
         throw GradleException("Missing keystore or local.properties file")
