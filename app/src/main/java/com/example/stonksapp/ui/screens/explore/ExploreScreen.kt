@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,6 +42,8 @@ import com.example.stonksapp.viewmodel.ExploreViewModel
 
 @Composable
 fun ExploreScreen(
+    scrollRequestState: Boolean,
+    scrollToTop: (suspend () -> Unit) -> Unit,
     viewModel: ExploreViewModel = hiltViewModel(),
     onStonkClick: (String) -> Unit,
 ) {
@@ -47,7 +51,9 @@ fun ExploreScreen(
     ExploreScreen(
         uiState = uiState,
         onErrorShown = { viewModel.clearErrorFlow() },
-        onStonkClick = onStonkClick
+        onStonkClick = onStonkClick,
+        scrollRequestState = scrollRequestState,
+        onScrollToTop = scrollToTop
     )
 }
 
@@ -55,6 +61,8 @@ fun ExploreScreen(
 @Composable
 fun ExploreScreen(
     uiState: ExploreUiState,
+    onScrollToTop: (suspend () -> Unit) -> Unit,
+    scrollRequestState: Boolean,
     onErrorShown: () -> Unit,
     onStonkClick: (String) -> Unit
 ) {
@@ -98,21 +106,23 @@ fun ExploreScreen(
                         StocksList(
                             stockType = StockType.Gainer,
                             stockOverviewList = uiState.topGainersLosers.data?.topGainers ?: emptyList(),
-                            onStonkClick = onStonkClick
+                            onStonkClick = onStonkClick,
+                            scrollRequestState = scrollRequestState,
+                            onScrollToTop = onScrollToTop
                         )
                     } else {
                         // Top Losers
                         StocksList(
                             stockType = StockType.Loser,
                             stockOverviewList = uiState.topGainersLosers.data?.topLosers ?: emptyList(),
-                            onStonkClick = onStonkClick
+                            onStonkClick = onStonkClick,
+                            scrollRequestState = scrollRequestState,
+                            onScrollToTop = onScrollToTop
                         )
                     }
                 }
             }
         }
-
-
     }
 }
 
@@ -121,10 +131,22 @@ fun StocksList(
     modifier: Modifier = Modifier,
     stockType: StockType,
     stockOverviewList: List<StockOverview>,
+    scrollRequestState: Boolean,
+    onScrollToTop: (suspend () -> Unit) -> Unit,
     onStonkClick: (String) -> Unit
 ) {
+    val gridState = rememberLazyGridState()
+    LaunchedEffect(key1 = scrollRequestState) {
+        if (scrollRequestState) {
+            onScrollToTop {
+                gridState.animateScrollToItem(0)
+            }
+        }
+    }
+
     LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),
+        state = gridState,
         columns = GridCells.Fixed(2),
     ) {
         items(count = 2) {
@@ -158,7 +180,9 @@ private fun ExplorePreview() {
                     topGainersLosers = Resource.success(TopGainersLosers(Mock))
                 ),
                 onStonkClick = {},
-                onErrorShown = {}
+                onErrorShown = {},
+                onScrollToTop = {},
+                scrollRequestState = false
             )
         }
     }

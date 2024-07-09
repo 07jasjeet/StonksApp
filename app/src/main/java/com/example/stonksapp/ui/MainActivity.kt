@@ -5,7 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Create
@@ -29,16 +31,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.stonksapp.data.Theme
 import com.example.stonksapp.repository.preferences.AppPreferences
+import com.example.stonksapp.ui.components.HorizontalSpacer
 import com.example.stonksapp.ui.components.TextStonks
 import com.example.stonksapp.ui.navigation.AppNavigation
 import com.example.stonksapp.ui.navigation.AppNavigationItem
 import com.example.stonksapp.ui.screens.explore.navigation.ExploreDestination.Companion.toExploreDestination
 import com.example.stonksapp.ui.screens.search.SearchScreen
 import com.example.stonksapp.ui.screens.search.rememberSearchBarState
+import com.example.stonksapp.ui.theme.LocalIsDarkTheme
+import com.example.stonksapp.ui.theme.LocalUiMode
 import com.example.stonksapp.ui.theme.StonksAppTheme
+import com.jasjeet.cred_assign.ui.components.ThemeSwitcher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,9 +62,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StonksAppTheme(
-                appPreferences = remember { appPreferences }
-            ) {
+            val appPreferences = remember { appPreferences }
+            StonksAppTheme(appPreferences = appPreferences) {
                 var scrollToTopState by remember { mutableStateOf(false) }
                 val snackbarHostState = remember { SnackbarHostState() }
                 val scope = rememberCoroutineScope()
@@ -79,9 +86,7 @@ class MainActivity : ComponentActivity() {
                                     ?.route
 
                                 if (currentDestination == AppNavigationItem.Explore.route) {
-                                    IconButton(onClick = {
-                                        // Do nothing
-                                    }) {
+                                    IconButton(onClick = { scrollToTopState = true }) {
                                         Icon(
                                             imageVector = Icons.Default.Explore,
                                             tint = StonksAppTheme.colorScheme.text,
@@ -89,9 +94,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 } else {
-                                    IconButton(onClick = {
-                                        navController.popBackStack()
-                                    }) {
+                                    IconButton(onClick = { navController.popBackStack() }) {
                                         Icon(
                                             imageVector = Icons.Default.ArrowBackIosNew,
                                             tint = StonksAppTheme.colorScheme.text,
@@ -109,6 +112,22 @@ class MainActivity : ComponentActivity() {
                                         tint = StonksAppTheme.colorScheme.text,
                                         contentDescription = null
                                     )
+                                }
+                                
+                                val isDarkTheme = LocalIsDarkTheme.current
+                                ThemeSwitcher(
+                                    modifier = Modifier.padding(horizontal = 6.dp),
+                                    size = 36.dp,
+                                    darkTheme = isDarkTheme
+                                ) {
+                                    scope.launch {
+                                        val newTheme = if (isDarkTheme) {
+                                            Theme.LIGHT
+                                        } else {
+                                            Theme.DARK
+                                        }
+                                        appPreferences.theme.set(newTheme)
+                                    }
                                 }
                             }
                         )
