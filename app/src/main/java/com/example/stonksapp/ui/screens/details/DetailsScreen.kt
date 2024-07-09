@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
@@ -91,7 +92,7 @@ fun DetailsScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    TextStonks(text = "Loading")
+                    CircularProgressIndicator(color = StonksAppTheme.colorScheme.lbSignature)
                 }
             }
             Resource.Status.FAILED -> {
@@ -126,18 +127,18 @@ fun CompanyOverview.MainContent() {
         ) {
             Column(modifier = Modifier.fillMaxWidth(0.85f)) {
                 TextStonks(
-                    text = name,
+                    text = name ?: "--Name unavailable--",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 TextStonks(
-                    text ="$symbol, $assetType",
+                    text ="${symbol ?: "--Symbol unavailable--"}, ${assetType ?: "--Type unavailable--"}",
                     fontSize = 14.sp,
                     color = StonksAppTheme.colorScheme.hint,
                     fontWeight = FontWeight.Medium
                 )
                 TextStonks(
-                    text = exchange,
+                    text = exchange ?: "--Exchange unavailable--",
                     fontSize = 14.sp,
                     color = StonksAppTheme.colorScheme.hint,
                     fontWeight = FontWeight.Medium
@@ -147,7 +148,7 @@ fun CompanyOverview.MainContent() {
             Column(modifier = Modifier.fillMaxWidth()) {
                 TextStonks(
                     modifier = Modifier.align(alignment = Alignment.End),
-                    text = "$${bookValue}",
+                    text = "$${bookValue ?: "--Book value unavailable--"}",
                     fontSize = 12.sp,
                     letterSpacing = 0.sp,
                     fontWeight = FontWeight.Bold
@@ -163,7 +164,7 @@ fun CompanyOverview.MainContent() {
         ) {
             TextStonks(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                text = "About $name",
+                text = "About ${name ?: "--Name unavailable--"}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp
             )
@@ -179,7 +180,7 @@ fun CompanyOverview.MainContent() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 TextStonks(
-                    text = description,
+                    text = description ?: "--Description unavailable--",
                     fontSize = 14.5.sp,
                     fontWeight = FontWeight.Medium,
                     color = StonksAppTheme.colorScheme.text.copy(alpha = 0.6f),
@@ -188,14 +189,14 @@ fun CompanyOverview.MainContent() {
 
                 LazyRow {
                     item {
-                        InformationChip("Industry: $industry")
+                        InformationChip("Industry: ${industry ?: "--Industry unavailable--"}")
                     }
 
                     item {
                         HorizontalSpacer(width = 16.dp)
                     }
                     item {
-                        InformationChip("Sector: $sector")
+                        InformationChip("Sector: ${sector ?: "--Sector unavailable--"}")
                     }
                 }
 
@@ -235,14 +236,14 @@ fun CompanyOverview.MainContent() {
                                 .fillMaxWidth()
                                 .drawWithCache {
                                     val textLayoutResult = textMeasurer.measure(
-                                        text = "Current price: $${analystTargetPrice}",
+                                        text = "Current price: $${analystTargetPrice ?: "NA"}",
                                         style = textStyle
                                     )
                                     val textSize = textLayoutResult.size.toSize()
 
-                                    val max = `52WeekHigh`.toFloat()
-                                    val min = `52WeekLow`.toFloat()
-                                    val currentPrice = analystTargetPrice.toFloat()
+                                    val max = `52WeekHigh`?.toFloatOrNull() ?: 2f
+                                    val min = `52WeekLow`?.toFloatOrNull() ?: 0f
+                                    val currentPrice = analystTargetPrice?.toFloatOrNull() ?: 1f
                                     val pricePerPixel = size.width / (max - min)
 
                                     val pointerCircleRadius = 3.dp.toPx()
@@ -295,12 +296,14 @@ fun CompanyOverview.MainContent() {
                 }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TitleSubtitleText(
                         title = "Market Cap",
-                        subtitle = convertLargeNumber(marketCapitalization)
+                        subtitle = marketCapitalization?.let { convertLargeNumber(it) }
                     )
 
                     TitleSubtitleText(
@@ -329,7 +332,7 @@ fun CompanyOverview.MainContent() {
 }
 
 @Composable
-fun TitleSubtitleText(title: String, subtitle: String) {
+fun TitleSubtitleText(title: String, subtitle: String?) {
     Column {
         WeekHighLowText(
             title = title,
@@ -339,7 +342,7 @@ fun TitleSubtitleText(title: String, subtitle: String) {
 }
 
 @Composable
-private fun ColumnScope.WeekHighLowText(title: String, value: String) {
+private fun ColumnScope.WeekHighLowText(title: String, value: String?) {
     TextStonks(
         text = title,
         fontSize = 12.sp,
@@ -348,7 +351,7 @@ private fun ColumnScope.WeekHighLowText(title: String, value: String) {
     )
 
     TextStonks(
-        text = "$$value",
+        text = "$${value ?: "NA"}",
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
     )
