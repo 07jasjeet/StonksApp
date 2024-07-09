@@ -129,13 +129,13 @@ data class Paddings(
     val insideDialog: Dp = 14.dp,
     val dialogContent: Dp = 8.dp
 )
-private val LocalPaddings = staticCompositionLocalOf { Paddings() }
+val LocalPaddings = staticCompositionLocalOf { Paddings() }
 
 @Immutable
 data class Sizes(
     val dropdownItem: Dp = 20.dp
 )
-private val LocalSizes = staticCompositionLocalOf { Sizes() }
+val LocalSizes = staticCompositionLocalOf { Sizes() }
 
 @Immutable
 data class Shapes(
@@ -145,7 +145,7 @@ data class Shapes(
     val card: Shape = RoundedCornerShape(16.dp),
 )
 
-private val LocalShapes = staticCompositionLocalOf { Shapes() }
+val LocalShapes = staticCompositionLocalOf { Shapes() }
 
 @Immutable
 data class TextStyles(
@@ -160,7 +160,11 @@ data class TextStyles(
     val dialogTextBold: TextStyle = TextStyle(fontWeight = FontWeight.Bold, fontSize = 14.sp)
 )
 
-private val LocalTextStyles = staticCompositionLocalOf { TextStyles() }
+val LocalTextStyles = staticCompositionLocalOf { TextStyles() }
+
+val LocalUiMode = staticCompositionLocalOf { Theme.FOLLOW_SYSTEM }
+
+val LocalIsDarkTheme = staticCompositionLocalOf { false }
 
 @Composable
 fun StonksAppTheme(
@@ -169,8 +173,15 @@ fun StonksAppTheme(
     appPreferences: AppPreferences = remember(context) { AppPreferencesImpl(context) },
     content: @Composable () -> Unit
 ) {
-
     val theme by appPreferences.theme.getFlow().collectAsState(initial = Theme.FOLLOW_SYSTEM)
+    val isDarkTheme = remember(theme) {
+        when (theme) {
+            Theme.DARK -> true
+            Theme.LIGHT -> false
+            Theme.FOLLOW_SYSTEM -> isSystemThemeDark
+        }
+    }
+
     val localColorScheme = remember(theme) {
         when (theme) {
             Theme.LIGHT -> colorSchemeLight
@@ -206,6 +217,8 @@ fun StonksAppTheme(
         LocalSizes provides Sizes(),
         LocalTextStyles provides TextStyles(),
         LocalColorScheme provides localColorScheme,
+        LocalUiMode provides theme,
+        LocalIsDarkTheme provides isDarkTheme,
         content = {
             MaterialTheme(
                 colorScheme = materialColorScheme,
